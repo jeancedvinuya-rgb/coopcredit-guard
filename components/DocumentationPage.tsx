@@ -96,7 +96,7 @@ const DocumentationPage: React.FC = () => {
               ['Loan Amount (₱)', 'Number', 'Any positive number'],
               ['Loan Term (Months)', 'Number', 'Any positive integer'],
               ['Loan Type', 'Categorical', 'Collateral, Market, Mid-Year, Quick, Regular, Salary, Others'],
-              ['Employment Status', 'Categorical', 'Employed-Government, Licensed Professional, Retired, Seaman/OFW, Self-employed'],
+              ['Employment Status', 'Categorical', 'Employed-Government, Employed-Private, Licensed Professional, Retired, Seaman/OFW, Self-employed'],
             ]}
           />
 
@@ -122,7 +122,7 @@ const DocumentationPage: React.FC = () => {
             headers={['Factor', 'Weight', 'Description']}
             rows={[
               ['Debt-to-Income Ratio', '~30%', 'Loan amount ÷ (monthly income × loan term). Strongest predictor.'],
-              ['Employment Stability', '~15%', 'Government and licensed professionals are lowest risk.'],
+              ['Employment Stability', '~15%', 'Government, private employees, and licensed professionals are lowest risk.'],
               ['Age', '~10%', 'Members aged 30–55 are lowest risk.'],
               ['Education Level', '~10%', 'Higher education correlates with lower default risk.'],
               ['Loan Amount', '~10%', 'Larger loans carry higher risk.'],

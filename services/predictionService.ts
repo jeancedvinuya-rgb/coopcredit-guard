@@ -23,7 +23,7 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   else riskScore += 7;
 
   // 3. Employment stability (weight ~15%)
-  const stableJobs = ["Employed-Government", "Licensed Professional"];
+  const stableJobs = ["Employed-Government", "Employed-Private", "Licensed Professional"];
   const moderateJobs = ["Self-employed", "Seaman/OFW"];
   if (stableJobs.includes(predictors.employmentStatus)) riskScore += 2;
   else if (moderateJobs.includes(predictors.employmentStatus)) riskScore += 8;
