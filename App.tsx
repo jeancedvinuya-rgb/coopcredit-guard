@@ -4,10 +4,11 @@ import PredictorForm from './components/PredictorForm';
 import ResultDisplay from './components/ResultDisplay';
 import DocumentationPage from './components/DocumentationPage';
 import HistoricalLogsPage from './components/HistoricalLogsPage';
+import ModelMetricsPage from './components/ModelMetricsPage';
 import { LoanPredictors, PredictionResult, HistoryEntry } from './types';
 import { getLoanPrediction } from './services/predictionService';
 
-type Page = 'home' | 'documentation' | 'logs';
+type Page = 'home' | 'documentation' | 'logs' | 'metrics';
 
 const STORAGE_KEY = 'coopcredit-guard-history';
 
@@ -100,7 +101,12 @@ const App: React.FC = () => {
                 </span>
               )}
             </button>
-            <span className="text-slate-300 cursor-default">Model Metrics</span>
+            <button
+              onClick={() => navigate('metrics')}
+              className={`hover:text-indigo-600 transition-colors cursor-pointer ${page === 'metrics' ? 'text-indigo-600' : ''}`}
+            >
+              Model Metrics
+            </button>
           </div>
           {/* Mobile menu */}
           <div className="md:hidden flex gap-3">
@@ -122,6 +128,12 @@ const App: React.FC = () => {
               )}
             </button>
             <button
+              onClick={() => navigate('metrics')}
+              className={`text-xs font-medium px-2 py-1 rounded ${page === 'metrics' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
+            >
+              Metrics
+            </button>
+            <button
               onClick={() => navigate('documentation')}
               className={`text-xs font-medium px-2 py-1 rounded ${page === 'documentation' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
             >
@@ -135,6 +147,8 @@ const App: React.FC = () => {
         <DocumentationPage />
       ) : page === 'logs' ? (
         <HistoricalLogsPage logs={history} onClear={clearHistory} />
+      ) : page === 'metrics' ? (
+        <ModelMetricsPage logs={history} />
       ) : (
         <main className="max-w-4xl mx-auto px-6 pt-12 space-y-12">
           {/* Intro */}
