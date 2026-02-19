@@ -21,6 +21,13 @@ export interface PredictionResult {
   recommendation: string;
 }
 
+export interface HistoryEntry {
+  id: string;
+  timestamp: string;
+  input: LoanPredictors;
+  result: PredictionResult;
+}
+
 export enum EducationLevel {
   Elementary = 'Elementary',
   HighSchool = 'High School',

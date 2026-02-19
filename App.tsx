@@ -1,26 +1,53 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PredictorForm from './components/PredictorForm';
 import ResultDisplay from './components/ResultDisplay';
 import DocumentationPage from './components/DocumentationPage';
-import { LoanPredictors, PredictionResult } from './types';
+import HistoricalLogsPage from './components/HistoricalLogsPage';
+import { LoanPredictors, PredictionResult, HistoryEntry } from './types';
 import { getLoanPrediction } from './services/predictionService';
 
-type Page = 'home' | 'documentation';
+type Page = 'home' | 'documentation' | 'logs';
+
+const STORAGE_KEY = 'coopcredit-guard-history';
+
+const loadHistory = (): HistoryEntry[] => {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+};
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<Page>('home');
+  const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);
+  const [lastInput, setLastInput] = useState<LoanPredictors | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+  }, [history]);
 
   const handlePredict = async (data: LoanPredictors) => {
     setLoading(true);
     setError(null);
+    setLastInput(data);
     try {
       const result = await getLoanPrediction(data);
       setPrediction(result);
-      // Smooth scroll to result
+
+      const entry: HistoryEntry = {
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        input: data,
+        result,
+      };
+      setHistory(prev => [...prev, entry]);
+
       setTimeout(() => {
         document.getElementById('result-section')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -30,6 +57,10 @@ const App: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
   };
 
   const navigate = (p: Page) => {
@@ -58,16 +89,43 @@ const App: React.FC = () => {
             >
               Documentation
             </button>
-            <span className="text-slate-300 cursor-default">Historical Logs</span>
+            <button
+              onClick={() => navigate('logs')}
+              className={`hover:text-indigo-600 transition-colors cursor-pointer relative ${page === 'logs' ? 'text-indigo-600' : ''}`}
+            >
+              Historical Logs
+              {history.length > 0 && (
+                <span className="absolute -top-2 -right-4 bg-indigo-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {history.length}
+                </span>
+              )}
+            </button>
             <span className="text-slate-300 cursor-default">Model Metrics</span>
           </div>
           {/* Mobile menu */}
-          <div className="md:hidden">
+          <div className="md:hidden flex gap-3">
             <button
-              onClick={() => navigate(page === 'documentation' ? 'home' : 'documentation')}
-              className="text-sm font-medium text-indigo-600"
+              onClick={() => navigate('home')}
+              className={`text-xs font-medium px-2 py-1 rounded ${page === 'home' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
             >
-              {page === 'documentation' ? 'Predictor' : 'Docs'}
+              Predictor
+            </button>
+            <button
+              onClick={() => navigate('logs')}
+              className={`text-xs font-medium px-2 py-1 rounded relative ${page === 'logs' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
+            >
+              Logs
+              {history.length > 0 && (
+                <span className="absolute -top-1 -right-2 bg-indigo-600 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {history.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => navigate('documentation')}
+              className={`text-xs font-medium px-2 py-1 rounded ${page === 'documentation' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
+            >
+              Docs
             </button>
           </div>
         </div>
@@ -75,6 +133,8 @@ const App: React.FC = () => {
 
       {page === 'documentation' ? (
         <DocumentationPage />
+      ) : page === 'logs' ? (
+        <HistoricalLogsPage logs={history} onClear={clearHistory} />
       ) : (
         <main className="max-w-4xl mx-auto px-6 pt-12 space-y-12">
           {/* Intro */}
