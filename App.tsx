@@ -72,10 +72,10 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
       {/* Header */}
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
+      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
           <button onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
               CG
             </div>
             <div className="text-left">
@@ -108,38 +108,32 @@ const App: React.FC = () => {
               Model Metrics
             </button>
           </div>
-          {/* Mobile menu */}
-          <div className="md:hidden flex gap-3">
+        </div>
+        {/* Mobile tab bar */}
+        <div className="md:hidden flex border-t border-slate-100">
+          {([
+            { id: 'home' as Page, label: 'Predictor' },
+            { id: 'logs' as Page, label: 'Logs' },
+            { id: 'metrics' as Page, label: 'Metrics' },
+            { id: 'documentation' as Page, label: 'Docs' },
+          ]).map(tab => (
             <button
-              onClick={() => navigate('home')}
-              className={`text-xs font-medium px-2 py-1 rounded ${page === 'home' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
+              key={tab.id}
+              onClick={() => navigate(tab.id)}
+              className={`flex-1 py-2.5 text-xs font-semibold text-center relative transition-colors ${
+                page === tab.id
+                  ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/50'
+                  : 'text-slate-400 hover:text-slate-600'
+              }`}
             >
-              Predictor
-            </button>
-            <button
-              onClick={() => navigate('logs')}
-              className={`text-xs font-medium px-2 py-1 rounded relative ${page === 'logs' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
-            >
-              Logs
-              {history.length > 0 && (
-                <span className="absolute -top-1 -right-2 bg-indigo-600 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              {tab.label}
+              {tab.id === 'logs' && history.length > 0 && (
+                <span className="absolute top-1 ml-0.5 bg-indigo-600 text-white text-[8px] font-bold w-4 h-4 rounded-full inline-flex items-center justify-center">
                   {history.length}
                 </span>
               )}
             </button>
-            <button
-              onClick={() => navigate('metrics')}
-              className={`text-xs font-medium px-2 py-1 rounded ${page === 'metrics' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
-            >
-              Metrics
-            </button>
-            <button
-              onClick={() => navigate('documentation')}
-              className={`text-xs font-medium px-2 py-1 rounded ${page === 'documentation' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}`}
-            >
-              Docs
-            </button>
-          </div>
+          ))}
         </div>
       </nav>
 
