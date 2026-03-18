@@ -6,6 +6,11 @@ import { LoanPredictors, PredictionResult } from "../types";
  * Scores risk factors on a 0–100 scale based on cooperative lending patterns.
  */
 export const getLoanPrediction = async (predictors: LoanPredictors): Promise<PredictionResult> => {
+  // --- Age validation ---
+  if (predictors.age < 18) {
+    throw new Error('Age must be 18 or above.');
+  }
+
   // --- Weighted risk scoring ---
   let riskScore = 0;
 

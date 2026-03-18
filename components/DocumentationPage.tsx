@@ -82,7 +82,7 @@ const DocumentationPage: React.FC = () => {
           <Table
             headers={['Predictor', 'Data Type', 'Values']}
             rows={[
-              ['Age', 'Number', 'Any positive integer'],
+              ['Age', 'Number', 'Minimum 18 years old'],
               ['Gender', 'Categorical', 'Male, Female'],
               ['Marital Status', 'Categorical', 'Single, Married, Partnered, Widowed'],
               ['Education Attainment', 'Categorical', 'Elementary, High School, Bachelor, Masteral, Doctoral'],
