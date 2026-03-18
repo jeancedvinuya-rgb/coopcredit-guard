@@ -162,16 +162,16 @@ const ModelMetricsPage: React.FC<Props> = ({ logs }) => {
               <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4">Feature Importance (Weights)</h3>
               <div className="space-y-3">
                 {[
-                  { name: 'Debt-to-Income Ratio', weight: 30 },
-                  { name: 'Employment Stability', weight: 15 },
+                  { name: 'Employment Stability', weight: 16 },
+                  { name: 'Loan Type', weight: 12 },
+                  { name: 'Debt-to-Income Ratio', weight: 12 },
+                  { name: 'Mode of Payment', weight: 12 },
+                  { name: 'Education Level', weight: 11 },
+                  { name: 'Loan Term', weight: 11 },
                   { name: 'Age', weight: 10 },
-                  { name: 'Education Level', weight: 10 },
-                  { name: 'Loan Amount', weight: 10 },
-                  { name: 'Application Type', weight: 8 },
-                  { name: 'Loan Term', weight: 7 },
-                  { name: 'Mode of Payment', weight: 5 },
-                  { name: 'Marital Status', weight: 5 },
-                  { name: 'Loan Type', weight: 4 },
+                  { name: 'Loan Amount', weight: 7 },
+                  { name: 'Application Type', weight: 7 },
+                  { name: 'Marital Status', weight: 2 },
                 ].map(f => (
                   <div key={f.name}>
                     <div className="flex justify-between text-xs mb-1">
@@ -181,7 +181,7 @@ const ModelMetricsPage: React.FC<Props> = ({ logs }) => {
                     <div className="w-full bg-slate-100 rounded-full h-2">
                       <div
                         className="bg-indigo-500 h-2 rounded-full transition-all"
-                        style={{ width: `${(f.weight / 30) * 100}%` }}
+                        style={{ width: `${(f.weight / 16) * 100}%` }}
                       ></div>
                     </div>
                   </div>

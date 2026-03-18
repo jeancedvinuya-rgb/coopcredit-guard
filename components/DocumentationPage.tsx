@@ -121,16 +121,16 @@ const DocumentationPage: React.FC = () => {
           <Table
             headers={['Factor', 'Weight', 'Description']}
             rows={[
-              ['Debt-to-Income Ratio', '~30%', 'Loan amount ÷ (monthly income × loan term). Strongest predictor.'],
-              ['Employment Stability', '~15%', 'Government, private employees, and licensed professionals are lowest risk.'],
-              ['Age', '~10%', 'Members aged 30–55 are lowest risk.'],
-              ['Education Level', '~10%', 'Higher education correlates with lower default risk.'],
-              ['Loan Amount', '~10%', 'Larger loans carry higher risk.'],
-              ['Application Type', '~8%', 'Renewal applications indicate positive repayment history.'],
-              ['Loan Term', '~7%', 'Longer terms carry slightly higher risk.'],
-              ['Mode of Payment', '~5%', 'Weekly payments correlate with lower risk than quarterly.'],
-              ['Marital Status', '~5%', 'Married members show slightly lower default rates.'],
-              ['Loan Type', '~4%', 'Collateral and market loans carry higher risk than salary or quick loans.'],
+              ['Employment Stability', '~16%', 'Licensed professionals and private employees are lowest risk. Strongest predictor per dataset.'],
+              ['Loan Type', '~12%', 'Quick and salary loans are lowest risk. Regular and market loans carry higher risk.'],
+              ['Debt-to-Income Ratio', '~12%', 'Loan amount ÷ (monthly income × loan term). Higher DTI increases risk.'],
+              ['Mode of Payment', '~12%', 'Quarterly payments correlate with lowest default risk per dataset.'],
+              ['Education Level', '~11%', 'High school graduates show lowest default rates per dataset.'],
+              ['Loan Term', '~11%', 'Terms of 18–36 months carry highest risk per dataset.'],
+              ['Age', '~10%', 'Members aged 18–25 show lowest default risk. Ages 36–45 are highest risk per dataset.'],
+              ['Loan Amount', '~7%', 'Loans in the ₱100K–200K range carry the highest risk.'],
+              ['Application Type', '~7%', 'New applications show better credit performance than renewals per dataset.'],
+              ['Marital Status', '~2%', 'Widowed members show slightly lower default rates.'],
             ]}
           />
 
@@ -140,10 +140,10 @@ const DocumentationPage: React.FC = () => {
               DTI = Loan Amount ÷ (Monthly Income × Loan Term)
             </p>
             <div className="mt-3 text-sm text-slate-600 space-y-1">
-              <p>• DTI &gt; 0.6 → High risk (+30 points)</p>
-              <p>• DTI &gt; 0.4 → Elevated risk (+20 points)</p>
-              <p>• DTI &gt; 0.25 → Moderate risk (+10 points)</p>
-              <p>• DTI ≤ 0.25 → Low risk (+3 points)</p>
+              <p>• DTI &gt; 0.6 → High risk (+12 points)</p>
+              <p>• DTI &gt; 0.4 → Elevated risk (+8 points)</p>
+              <p>• DTI &gt; 0.25 → Moderate risk (+4 points)</p>
+              <p>• DTI ≤ 0.25 → Low risk (+1 point)</p>
             </div>
           </div>
         </Section>
