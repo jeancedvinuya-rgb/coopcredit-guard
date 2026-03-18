@@ -45,7 +45,6 @@ export enum MaritalStatus {
 
 export enum EmploymentStatus {
   EmployedGov = 'Employed-Government',
-  EmployedPrivate = 'Employed-Private',
   LicensedProf = 'Licensed Professional',
   Retired = 'Retired',
   SeamanOFW = 'Seaman/OFW',

@@ -32,8 +32,8 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   let riskScore = 0;
 
   // 1. Employment stability (weight ~16% — strongest predictor per dataset)
-  // Data: Licensed Prof 0.786, Employed-Private 0.707, Retired 0.663, Self-employed 0.621, Seaman/OFW 0.584, Employed-Gov 0.541
-  const lowRiskJobs = ["Licensed Professional", "Employed-Private"];
+  // Data: Licensed Prof 0.786, Retired 0.663, Self-employed 0.621, Seaman/OFW 0.584, Employed-Gov 0.541
+  const lowRiskJobs = ["Licensed Professional"];
   const moderateJobs = ["Retired", "Self-employed"];
   if (lowRiskJobs.includes(predictors.employmentStatus)) riskScore += 3;
   else if (moderateJobs.includes(predictors.employmentStatus)) riskScore += 9;
