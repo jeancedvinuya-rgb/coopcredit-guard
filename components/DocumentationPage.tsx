@@ -113,7 +113,7 @@ const DocumentationPage: React.FC = () => {
 
         <Section title="5. Prediction Model">
           <p className="text-sm text-slate-600 leading-relaxed">
-            The prediction engine uses a <strong>weighted heuristic scoring model</strong> that assigns risk points across 9 factors.
+            The prediction engine uses a <strong>weighted heuristic scoring model</strong> that assigns risk points across 10 factors.
             Each factor contributes a weighted score to a cumulative risk total (0–100 scale).
           </p>
 
@@ -130,6 +130,7 @@ const DocumentationPage: React.FC = () => {
               ['Loan Term', '~7%', 'Longer terms carry slightly higher risk.'],
               ['Mode of Payment', '~5%', 'Weekly payments correlate with lower risk than quarterly.'],
               ['Marital Status', '~5%', 'Married members show slightly lower default rates.'],
+              ['Loan Type', '~4%', 'Collateral and market loans carry higher risk than salary or quick loans.'],
             ]}
           />
 

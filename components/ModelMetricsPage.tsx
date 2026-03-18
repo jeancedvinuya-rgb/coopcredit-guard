@@ -171,6 +171,7 @@ const ModelMetricsPage: React.FC<Props> = ({ logs }) => {
                   { name: 'Loan Term', weight: 7 },
                   { name: 'Mode of Payment', weight: 5 },
                   { name: 'Marital Status', weight: 5 },
+                  { name: 'Loan Type', weight: 4 },
                 ].map(f => (
                   <div key={f.name}>
                     <div className="flex justify-between text-xs mb-1">
@@ -280,7 +281,7 @@ const ModelMetricsPage: React.FC<Props> = ({ logs }) => {
                 </div>
                 <div className="flex justify-between py-2 border-b border-slate-100">
                   <span className="text-slate-500">Risk Factors</span>
-                  <span className="font-medium text-slate-800">9 weighted factors</span>
+                  <span className="font-medium text-slate-800">10 weighted factors</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-slate-100">
                   <span className="text-slate-500">Output Range</span>
