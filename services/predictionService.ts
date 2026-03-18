@@ -40,12 +40,17 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   let riskScore = 0;
 
   // 1. Employment stability (weight ~16% — strongest predictor per dataset)
-  // Data: Licensed Prof 0.786, Employed-Private 0.705, Retired 0.663, Self-employed 0.621, Seaman/OFW 0.584, Employed-Gov 0.541
-  const lowRiskJobs = ["Licensed Professional", "Employed - Private"];
-  const moderateJobs = ["Retired", "Self-employed"];
-  if (lowRiskJobs.includes(predictors.employmentStatus)) riskScore += 3;
-  else if (moderateJobs.includes(predictors.employmentStatus)) riskScore += 9;
-  else riskScore += 14; // Seaman/OFW, Employed-Government
+  // Each status has a distinct score based on credit performance:
+  // Licensed Prof 0.786, Employed-Private 0.705, Retired 0.663, Self-employed 0.621, Seaman/OFW 0.584, Employed-Gov 0.541
+  const employmentRiskMap: Record<string, number> = {
+    "Licensed Professional": 1,
+    "Employed - Private": 4,
+    "Retired": 7,
+    "Self-employed": 9,
+    "Seaman/OFW": 12,
+    "Employed-Government": 16,
+  };
+  riskScore += employmentRiskMap[predictors.employmentStatus] ?? 9;
 
   // 2. Loan type (weight ~12%)
   // Data: Christmas 0.818, Quick 0.773, Salary 0.750, Others 0.644, Collateral 0.625, Regular 0.589, Market 0.500
@@ -125,8 +130,8 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   const factors: { label: string; weight: number }[] = [];
 
   factors.push({
-    label: `Employment: ${predictors.employmentStatus} (${lowRiskJobs.includes(predictors.employmentStatus) ? "low risk" : moderateJobs.includes(predictors.employmentStatus) ? "moderate risk" : "higher risk"})`,
-    weight: lowRiskJobs.includes(predictors.employmentStatus) ? 1 : 3,
+    label: `Employment: ${predictors.employmentStatus} (${(employmentRiskMap[predictors.employmentStatus] ?? 9) <= 4 ? "low risk" : (employmentRiskMap[predictors.employmentStatus] ?? 9) <= 9 ? "moderate risk" : "higher risk"})`,
+    weight: (employmentRiskMap[predictors.employmentStatus] ?? 9) > 9 ? 3 : (employmentRiskMap[predictors.employmentStatus] ?? 9) > 4 ? 2 : 1,
   });
 
   factors.push({
