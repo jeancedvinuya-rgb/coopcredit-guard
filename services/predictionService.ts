@@ -2,6 +2,18 @@
 import { LoanPredictors, PredictionResult } from "../types";
 
 /**
+ * Normalize input values to handle inconsistencies from processed_credit_performance dataset.
+ * Fixes known data quality issues: "Mid-year" → "Mid-Year", "REgular" → "Regular".
+ */
+const normalizeLoanType = (loanType: string): string => {
+  const normalized: Record<string, string> = {
+    "Mid-year": "Mid-Year",
+    "REgular": "Regular",
+  };
+  return normalized[loanType] ?? loanType;
+};
+
+/**
  * Local heuristic-based loan prediction.
  * Scores risk factors on a 0–100 scale based on cooperative lending patterns.
  */
@@ -10,6 +22,9 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   if (predictors.age < 18) {
     throw new Error('Age must be 18 or above.');
   }
+
+  // Normalize inputs to match processed_credit_performance dataset
+  const loanType = normalizeLoanType(predictors.loanType);
 
   // --- Weighted risk scoring ---
   let riskScore = 0;
@@ -64,6 +79,13 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   else if (predictors.maritalStatus === "Single") riskScore += 4;
   else riskScore += 3;
 
+  // 10. Loan type risk (aligned with processed_credit_performance dataset)
+  const highRiskLoans = ["Collateral", "Market"];
+  const moderateRiskLoans = ["Regular", "Others", "Mid-Year"];
+  if (highRiskLoans.includes(loanType)) riskScore += 4;
+  else if (moderateRiskLoans.includes(loanType)) riskScore += 2;
+  else riskScore += 1; // Quick, Salary — lower risk
+
   // Clamp to 0-100
   const defaultProbability = Math.max(0, Math.min(100, Math.round(riskScore)));
 
@@ -103,6 +125,11 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   factors.push({
     label: `Loan amount ₱${predictors.loanAmount.toLocaleString()} over ${predictors.loanTerm} months`,
     weight: predictors.loanAmount > 100000 ? 2 : 1,
+  });
+
+  factors.push({
+    label: `Loan type: ${loanType} (${highRiskLoans.includes(loanType) ? "higher risk" : "standard"})`,
+    weight: highRiskLoans.includes(loanType) ? 2 : 1,
   });
 
   // Sort by weight descending and take top 3
