@@ -40,11 +40,13 @@ export enum MaritalStatus {
   Single = 'Single',
   Married = 'Married',
   Partnered = 'Partnered',
-  Widowed = 'Widowed'
+  Widowed = 'Widowed',
+  LegallySeperated = 'Legally Seperated'
 }
 
 export enum EmploymentStatus {
   EmployedGov = 'Employed-Government',
+  EmployedPrivate = 'Employed - Private',
   LicensedProf = 'Licensed Professional',
   Retired = 'Retired',
   SeamanOFW = 'Seaman/OFW',
@@ -55,6 +57,7 @@ export enum LoanType {
   Collateral = 'Collateral',
   Market = 'Market',
   MidYear = 'Mid-Year',
+  Christmas = 'Christmas',
   Quick = 'Quick',
   Regular = 'Regular',
   Salary = 'Salary',
