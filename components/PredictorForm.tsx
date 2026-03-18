@@ -120,6 +120,7 @@ const PredictorForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
               <option value="Monthly">Monthly</option>
               <option value="Quarterly">Quarterly</option>
               <option value="Weekly">Weekly</option>
+              <option value="Daily">Daily</option>
             </select>
           </div>
         </div>

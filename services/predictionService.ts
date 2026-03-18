@@ -2,7 +2,7 @@
 import { LoanPredictors, PredictionResult } from "../types";
 
 /**
- * Normalize input values to handle inconsistencies from processed_credit_performance dataset.
+ * Normalize input values to handle inconsistencies from raw dataset.
  * Fixes known data quality issues: "Mid-year" → "Mid-Year", "REgular" → "Regular".
  */
 const normalizeLoanType = (loanType: string): string => {
@@ -11,6 +11,13 @@ const normalizeLoanType = (loanType: string): string => {
     "REgular": "Regular",
   };
   return normalized[loanType] ?? loanType;
+};
+
+const normalizeModeOfPayment = (mode: string): string => {
+  const normalized: Record<string, string> = {
+    "Quaterly": "Quarterly",
+  };
+  return normalized[mode] ?? mode;
 };
 
 /**
@@ -23,8 +30,9 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
     throw new Error('Age must be 18 or above.');
   }
 
-  // Normalize inputs to match processed_credit_performance dataset
+  // Normalize inputs to match dataset
   const loanType = normalizeLoanType(predictors.loanType);
+  const modeOfPayment = normalizeModeOfPayment(predictors.modeOfPayment);
 
   // --- Weighted risk scoring (aligned with processed_credit_performance dataset) ---
   // Weights derived from credit performance spread analysis across 1,599 records.
@@ -32,16 +40,16 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   let riskScore = 0;
 
   // 1. Employment stability (weight ~16% — strongest predictor per dataset)
-  // Data: Licensed Prof 0.786, Retired 0.663, Self-employed 0.621, Seaman/OFW 0.584, Employed-Gov 0.541
-  const lowRiskJobs = ["Licensed Professional"];
+  // Data: Licensed Prof 0.786, Employed-Private 0.705, Retired 0.663, Self-employed 0.621, Seaman/OFW 0.584, Employed-Gov 0.541
+  const lowRiskJobs = ["Licensed Professional", "Employed - Private"];
   const moderateJobs = ["Retired", "Self-employed"];
   if (lowRiskJobs.includes(predictors.employmentStatus)) riskScore += 3;
   else if (moderateJobs.includes(predictors.employmentStatus)) riskScore += 9;
   else riskScore += 14; // Seaman/OFW, Employed-Government
 
   // 2. Loan type (weight ~12%)
-  // Data: Quick 0.773, Salary 0.750, Others 0.644, Collateral 0.625, Regular 0.589, Market 0.500
-  const lowRiskLoans = ["Quick", "Salary"];
+  // Data: Christmas 0.818, Quick 0.773, Salary 0.750, Others 0.644, Collateral 0.625, Regular 0.589, Market 0.500
+  const lowRiskLoans = ["Christmas", "Quick", "Salary"];
   const moderateRiskLoans = ["Others", "Collateral"];
   if (lowRiskLoans.includes(loanType)) riskScore += 2;
   else if (moderateRiskLoans.includes(loanType)) riskScore += 6;
@@ -55,9 +63,10 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   else riskScore += 1;
 
   // 4. Mode of payment (weight ~12%)
-  // Data: Quarterly 0.795, Weekly 0.630, Monthly 0.623
-  if (predictors.modeOfPayment === "Quarterly") riskScore += 1;
-  else if (predictors.modeOfPayment === "Weekly") riskScore += 6;
+  // Data: Quarterly 0.795, Weekly 0.630, Monthly 0.623, Daily 0.600
+  if (modeOfPayment === "Quarterly") riskScore += 1;
+  else if (modeOfPayment === "Weekly") riskScore += 6;
+  else if (modeOfPayment === "Daily") riskScore += 8;
   else riskScore += 12; // Monthly
 
   // 5. Education level (weight ~11%)
@@ -93,10 +102,11 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   riskScore += predictors.loanAppType === "New" ? 1 : 7;
 
   // 10. Marital status (weight ~2%)
-  // Data: Widowed 0.656, Single 0.641, Married 0.627
+  // Data: Widowed 0.656, Single 0.641, Married 0.627, Partnered 0.500, Legally Seperated 0.375
   if (predictors.maritalStatus === "Widowed") riskScore += 0;
   else if (predictors.maritalStatus === "Single") riskScore += 1;
-  else riskScore += 2; // Married, Partnered
+  else if (predictors.maritalStatus === "Married" || predictors.maritalStatus === "Partnered") riskScore += 2;
+  else riskScore += 3; // Legally Seperated — highest risk per dataset
 
   // Clamp to 0-100
   const defaultProbability = Math.max(0, Math.min(100, Math.round(riskScore)));
@@ -130,8 +140,8 @@ export const getLoanPrediction = async (predictors: LoanPredictors): Promise<Pre
   });
 
   factors.push({
-    label: `Payment: ${predictors.modeOfPayment} (${predictors.modeOfPayment === "Quarterly" ? "lowest risk" : "standard"})`,
-    weight: predictors.modeOfPayment === "Quarterly" ? 1 : 2,
+    label: `Payment: ${modeOfPayment} (${modeOfPayment === "Quarterly" ? "lowest risk" : "standard"})`,
+    weight: modeOfPayment === "Quarterly" ? 1 : 2,
   });
 
   factors.push({

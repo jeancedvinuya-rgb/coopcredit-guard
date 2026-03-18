@@ -84,7 +84,7 @@ const DocumentationPage: React.FC = () => {
             rows={[
               ['Age', 'Number', 'Minimum 18 years old'],
               ['Gender', 'Categorical', 'Male, Female'],
-              ['Marital Status', 'Categorical', 'Single, Married, Partnered, Widowed'],
+              ['Marital Status', 'Categorical', 'Single, Married, Partnered, Widowed, Legally Seperated'],
               ['Education Attainment', 'Categorical', 'Elementary, High School, Bachelor, Masteral, Doctoral'],
             ]}
           />
@@ -95,8 +95,8 @@ const DocumentationPage: React.FC = () => {
             rows={[
               ['Loan Amount (₱)', 'Number', 'Any positive number'],
               ['Loan Term (Months)', 'Number', 'Any positive integer'],
-              ['Loan Type', 'Categorical', 'Collateral, Market, Mid-Year, Quick, Regular, Salary, Others'],
-              ['Employment Status', 'Categorical', 'Employed-Government, Licensed Professional, Retired, Seaman/OFW, Self-employed'],
+              ['Loan Type', 'Categorical', 'Collateral, Market, Mid-Year, Christmas, Quick, Regular, Salary, Others'],
+              ['Employment Status', 'Categorical', 'Employed-Government, Employed - Private, Licensed Professional, Retired, Seaman/OFW, Self-employed'],
             ]}
           />
 
@@ -106,7 +106,7 @@ const DocumentationPage: React.FC = () => {
             rows={[
               ['Monthly Income (₱)', 'Number', 'Any positive number'],
               ['Application Type', 'Categorical', 'New Application, Renewal'],
-              ['Mode of Payment', 'Categorical', 'Monthly, Quarterly, Weekly'],
+              ['Mode of Payment', 'Categorical', 'Monthly, Quarterly, Weekly, Daily'],
             ]}
           />
         </Section>
